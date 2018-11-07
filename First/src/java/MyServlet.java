@@ -6,6 +6,7 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 public class MyServlet extends HttpServlet {
 
     private int counter = 0;
+    private String myParam;
+
+    @Override
+    public void init(ServletConfig config) {
+        myParam = config.getInitParameter("MyParameter");
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -35,6 +42,7 @@ public class MyServlet extends HttpServlet {
             out.println("<h2>Welcome to my first servlet application</h2>");
             out.println("local counter = " + lcounter + "<BR>");
             out.println("global counter = " + counter + "<BR>");
+            out.println("Initial Parameter: " + myParam + "<BR>");
             out.println("getMethod(): " + request.getMethod() + "<BR>");
             out.println("getRemoteAddr() :" + request.getRemoteAddr() + "<BR>");
             out.println("getServerName(): " + request.getServerName() + "<BR>");

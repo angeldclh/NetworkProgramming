@@ -3,6 +3,10 @@
     <servlet>
         <servlet-name>MyServlet</servlet-name>
         <servlet-class>MyServlet</servlet-class>
+        <init-param>
+            <param-name>MyParameter</param-name>
+            <param-value>Initial value</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>MyServlet</servlet-name>
