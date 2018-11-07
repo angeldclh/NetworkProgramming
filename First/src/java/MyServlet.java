@@ -17,9 +17,10 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class MyServlet extends HttpServlet {
 
+    private int counter = 0;
+
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      *
      * @param request servlet request
      * @param response servlet response
@@ -28,9 +29,12 @@ public class MyServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        int lcounter = 0;
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             out.println("<h2>Welcome to my first servlet application</h2>");
+            out.println("local counter = " + lcounter + "<BR>");
+            out.println("global counter = " + counter + "<BR>");
             out.println("getMethod(): " + request.getMethod() + "<BR>");
             out.println("getRemoteAddr() :" + request.getRemoteAddr() + "<BR>");
             out.println("getServerName(): " + request.getServerName() + "<BR>");
@@ -42,6 +46,8 @@ public class MyServlet extends HttpServlet {
             int res = n1 + n2;
             out.println(n1 + " + " + n2 + " = " + res);
             out.close();
+            lcounter++;
+            counter++;
         }
 
     }
