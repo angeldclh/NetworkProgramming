@@ -28,6 +28,7 @@ public class EchoServer {
     @OnOpen
     public void onOpen(Session session) {
         System.out.println(session.getId() + " has opened a connection");
+        SessionHandler.addSession(session);
         try {
             session.getBasicRemote().sendText("Connection Established");
         } catch (IOException ex) {
@@ -43,12 +44,7 @@ public class EchoServer {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        System.out.println("Message from " + session.getId() + ": " + message);
-        try {
-            session.getBasicRemote().sendText(message);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        SessionHandler.sendToAllConnectedSessions(message);
     }
 
     /**
@@ -60,6 +56,7 @@ public class EchoServer {
      */
     @OnClose
     public void onClose(Session session) {
+        SessionHandler.removeSession(session);
         System.out.println("Session " + session.getId() + " has ended");
     }
 }
