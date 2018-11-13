@@ -39,4 +39,12 @@ public class SessionHandler {
             sendToSession(s, message);
         });
     }
+
+    public static void sendToAllConnectedSessionsInRoom(String roomID, String message) {
+        for (Session s : sessions) {
+            if (s.getUserProperties().get("roomid").equals(roomID)) {
+                sendToSession(s, message);
+            }
+        }
+    }
 }

@@ -9,7 +9,8 @@
     <body>
 
         <div>
-            <input type="text" id="messageinput"/>
+            <p>Room ID: <input type="text" id="roomid"/></p>
+            <p>Message: <input type="text" id="messageinput"/></p>
         </div>
         <div>
             <button type="button" onclick="openSocket();" >Open</button>
@@ -32,8 +33,9 @@
                     writeResponse("WebSocket is already opened.");
                     return;
                 }
+                var roomid = document.getElementById("roomid").value.toString();
                 // Create a new instance of the websocket
-                webSocket = new WebSocket("ws://localhost:8080/EchoChamber/echo");
+                webSocket = new WebSocket("ws://localhost:8080/EchoChamber/echo/rooms/" + roomid);
 
                 /**
                  * Binds functions to the listeners for the websocket.
