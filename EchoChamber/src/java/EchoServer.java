@@ -19,23 +19,24 @@ import javax.websocket.server.ServerEndpoint;
  *
  * @author angel
  */
-@ServerEndpoint("/echo/rooms/{roomid}")
+@ServerEndpoint("/echo/rooms/{roomid}/user/{nick}")
 public class EchoServer {
 
     /**
      * @param session
      * @param roomid
+     * @param nick
      * @OnOpen allows us to intercept the creation of a new session. The session class allows us to send data to the user. In the method onOpen, we'll let the user know that the handshake was successful.
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("roomid") final String roomid) {
+    public void onOpen(Session session, @PathParam("roomid") final String roomid, @PathParam("nick") final String nick) {
         System.out.println(session.getId() + " has opened a connection");
         session.getUserProperties().put("roomid", roomid);
+        session.getUserProperties().put("nick", nick);
         SessionHandler.addSession(session);
         try {
-            session.getBasicRemote().sendText("Connection Established, room " + roomid);
+            session.getBasicRemote().sendText("Connection Established, room " + roomid + ", user " + nick);
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 

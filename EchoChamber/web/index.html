@@ -46,7 +46,7 @@
                 var roomid = document.getElementById("roomid").value.toString();
 
                 // Create a new instance of the websocket
-                webSocket = new WebSocket("ws://localhost:8080/EchoChamber/echo/rooms/" + roomid);
+                webSocket = new WebSocket("ws://localhost:8080/EchoChamber/echo/rooms/" + roomid + "/user/" + nick);
 
                 /**
                  * Binds functions to the listeners for the websocket.
