@@ -76,6 +76,7 @@
             function send() {
                 var text = nick + ": " + document.getElementById("messageinput").value;
                 webSocket.send(text);
+                document.getElementById("messageinput").value = ""; //Clear message input
             }
 
             function closeSocket() {
