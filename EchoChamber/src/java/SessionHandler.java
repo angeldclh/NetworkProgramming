@@ -26,7 +26,7 @@ public class SessionHandler {
 
     public static void addSession(Session session) {
         SessionHandler.sessions.add(session);
-        //TODO: add key with the room to hashmap if it doesn't exist
+        //Add key with the room to hashmap if it doesn't exist
         String roomID = (String) session.getUserProperties().get("roomid");
         if (messages.get(roomID) == null) {
             messages.put(roomID, new ArrayList<>());
