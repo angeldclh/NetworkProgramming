@@ -74,9 +74,12 @@
              * Sends the value of the text input to the server
              */
             function send() {
-                var text = nick + ": " + document.getElementById("messageinput").value;
-                webSocket.send(text);
-                document.getElementById("messageinput").value = ""; //Clear message input
+                //Don't send empty messages
+                if (document.getElementById("messageinput").value !== "") {
+                    var text = nick + ": " + document.getElementById("messageinput").value;
+                    webSocket.send(text);
+                    document.getElementById("messageinput").value = ""; //Clear message input
+                }
             }
 
             function closeSocket() {

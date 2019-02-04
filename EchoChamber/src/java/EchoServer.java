@@ -33,11 +33,11 @@ public class EchoServer {
         System.out.println(session.getId() + " has opened a connection");
         session.getUserProperties().put("roomid", roomid);
         session.getUserProperties().put("nick", nick);
-        SessionHandler.addSession(session);
         try {
             session.getBasicRemote().sendText("Connection Established, room " + roomid + ", user " + nick);
         } catch (IOException ex) {
         }
+        SessionHandler.addSession(session);
     }
 
     /**

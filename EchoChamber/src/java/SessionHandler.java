@@ -26,15 +26,31 @@ public class SessionHandler {
 
     public static void addSession(Session session) {
         SessionHandler.sessions.add(session);
-        //Provide the complete history of messages since the room opening
-        /*     String roomID = (String) session.getUserProperties().get("roomid");
+        //TODO: add key with the room to hashmap if it doesn't exist
+        String roomID = (String) session.getUserProperties().get("roomid");
+        if (messages.get(roomID) == null) {
+            messages.put(roomID, new ArrayList<>());
+        }
+        //Provide the complete history of messages since the room opening      
         messages.get(roomID).forEach((msg) -> {
             sendToSession(session, msg);
-        });*/
+        });
     }
 
     public static void removeSession(Session session) {
         SessionHandler.sessions.remove(session);
+        // Delete chat history of room if this was the last user
+        String roomID = (String) session.getUserProperties().get("roomid");
+        boolean lastUser = true;
+        for (Session s : sessions) {
+            if (s.getUserProperties().get("roomid").equals(roomID)) {
+                lastUser = false;
+                break;
+            }
+        }
+        if (lastUser) {
+            messages.remove(roomID);
+        }
 
     }
 
@@ -43,7 +59,6 @@ public class SessionHandler {
         try {
             session.getBasicRemote().sendText(message);
         } catch (IOException ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -63,7 +78,7 @@ public class SessionHandler {
         }
     }
 
-    // Inserts a message in the List containg the history of the specified room
+    // Inserts a message in the List that contains the history of the specified room
     private static void addMessageToRoomHistory(String roomID, String message) {
         ArrayList<String> aux = messages.get(roomID);
         aux.add(message);
