@@ -25,12 +25,17 @@ public class SessionHandler {
     private static final HashMap<String, ArrayList<String>> messages = new HashMap<String, ArrayList<String>>();
 
     public static void addSession(Session session) {
-        SessionHandler.sessions.add(session);
         //Add key with the room to hashmap if it doesn't exist
         String roomID = (String) session.getUserProperties().get("roomid");
         if (messages.get(roomID) == null) {
             messages.put(roomID, new ArrayList<>());
+        } else {
+            //Inform other users in the room about this event
+            sendToAllConnectedSessionsInRoom(roomID, "INFO: user " + session.getUserProperties().get("nick") + " has joined the room", true);
         }
+        //Actually join the room
+        SessionHandler.sessions.add(session);
+
         //Provide the complete history of messages since the room opening      
         messages.get(roomID).forEach((msg) -> {
             sendToSession(session, msg);
@@ -50,6 +55,9 @@ public class SessionHandler {
         }
         if (lastUser) {
             messages.remove(roomID);
+        } else {
+            // Inform other users in the room about this event
+            sendToAllConnectedSessionsInRoom(roomID, "INFO: user " + session.getUserProperties().get("nick") + " has left the room", true);
         }
 
     }
@@ -68,12 +76,14 @@ public class SessionHandler {
         });
     }
 
-    public static void sendToAllConnectedSessionsInRoom(String roomID, String message) {
+    public static void sendToAllConnectedSessionsInRoom(String roomID, String message, boolean infoMessage) {
         for (Session s : sessions) {
             if (s.getUserProperties().get("roomid").equals(roomID)) {
                 sendToSession(s, message);
-                // Insert message to "fake DB"
-                addMessageToRoomHistory(roomID, message);
+                // Insert message to "fake DB" if the message is not about the event of joining or leaving the room
+                if (!infoMessage) {
+                    addMessageToRoomHistory(roomID, message);
+                }
             }
         }
     }

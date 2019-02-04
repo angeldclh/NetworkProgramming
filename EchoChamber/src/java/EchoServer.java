@@ -48,7 +48,7 @@ public class EchoServer {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        SessionHandler.sendToAllConnectedSessionsInRoom(session.getUserProperties().get("roomid").toString(), message);
+        SessionHandler.sendToAllConnectedSessionsInRoom(session.getUserProperties().get("roomid").toString(), message, false);
     }
 
     /**
