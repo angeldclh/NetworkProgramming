@@ -92,10 +92,10 @@ public class SessionHandler {
         for (Session s : sessions) {
             if (s.getUserProperties().get("roomid").equals(roomID)) {
                 sendToSession(s, message);
-                // Insert message to "fake DB" if the message is not informative (INFO or Users in...)
-                if (!infoMessage) {
-                    addMessageToRoomHistory(roomID, message);
-                }
+            }
+            // Insert message to "fake DB" if the message is not informative (INFO or Users in...)
+            if (!infoMessage) {
+                addMessageToRoomHistory(roomID, message);
             }
         }
     }
