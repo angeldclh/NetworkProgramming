@@ -52,6 +52,7 @@ public class SessionHandler {
         messages.get(roomID).forEach((msg) -> {
             sendToSession(session, msg);
         });
+
     }
 
     public static void removeSession(Session session) {
@@ -93,10 +94,10 @@ public class SessionHandler {
             if (s.getUserProperties().get("roomid").equals(roomID)) {
                 sendToSession(s, message);
             }
-            // Insert message to "fake DB" if the message is not informative (INFO or Users in...)
-            if (!infoMessage) {
-                addMessageToRoomHistory(roomID, message);
-            }
+        }
+        // Insert message to "fake DB" if the message is not informative (INFO or Users in...)
+        if (!infoMessage) {
+            addMessageToRoomHistory(roomID, message);
         }
     }
 

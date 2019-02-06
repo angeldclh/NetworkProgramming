@@ -1,4 +1,6 @@
 
+/* global WebSocket */
+
 var webSocket;
 var messages = document.getElementById("messages");
 var nick;
