@@ -7,7 +7,9 @@
         <meta name="viewport" content="width=device-width">
     </head>
     <body>
-
+        <div>
+            <p id="users"></p>
+        </div>
         <div>
             <p>Nick: <input type="text" id="nick"/></p>
             <p>Room ID: <input type="text" id="roomid"/></p>
@@ -62,11 +64,19 @@
                 };
 
                 webSocket.onmessage = function (event) {
-                    writeResponse(event.data);
+                    var msg = event.data.toLocaleString();
+
+                    //If the message is the userlist, update it in the frontend, if not, show it
+                    if (msg.startsWith("Users in this room:")) {
+                        document.getElementById("users").innerHTML = msg;
+                    } else {
+                        writeResponse(msg);
+                    }
                 };
 
                 webSocket.onclose = function (event) {
                     writeResponse("Connection closed");
+                    document.getElementById("users").innerHTML = "";
                 };
             }
 
