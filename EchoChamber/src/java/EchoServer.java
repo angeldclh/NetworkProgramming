@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnMessage;
@@ -48,7 +49,26 @@ public class EchoServer {
      */
     @OnMessage
     public void onMessage(String message, Session session) {
-        SessionHandler.sendToAllConnectedSessionsInRoom(session.getUserProperties().get("roomid").toString(), message, false);
+        String roomID = session.getUserProperties().get("roomid").toString();
+        String user = session.getUserProperties().get("nick").toString();
+
+        // Messages informing about changes on text input (user is / has stopped writing)
+        if (message.startsWith("writing")) { //The sending session is writing
+            ArrayList<String> aux = SessionHandler.users.get(roomID);
+            aux.remove(user);
+            aux.add(0, user + " (writing)");
+            //Send the updated user list
+            SessionHandler.sendToAllConnectedSessionsInRoom(roomID, "Users in this room: " + SessionHandler.users.get(roomID).toString(), true);
+        } else if (message.startsWith("not writing")) {
+            ArrayList<String> aux = SessionHandler.users.get(roomID);
+            aux.remove(user + " (writing)");
+            aux.add(user);
+            //Send the updated user list
+            SessionHandler.sendToAllConnectedSessionsInRoom(roomID, "Users in this room: " + SessionHandler.users.get(roomID).toString(), true);
+        } else {
+            // Normal messages
+            SessionHandler.sendToAllConnectedSessionsInRoom(roomID, message, false);
+        }
     }
 
     /**

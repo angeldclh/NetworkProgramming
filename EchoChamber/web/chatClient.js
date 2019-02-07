@@ -1,9 +1,15 @@
 
-/* global WebSocket */
+/* global WebSocket, isWriting */
 
 var webSocket;
 var messages = document.getElementById("messages");
 var nick;
+var msginput = document.getElementById("messageinput");
+var writing = false;
+
+// Handler for message input change (feature is writing)
+msginput.oninput = isWriting;
+msginput.onchange = stoppedWriting;
 
 // Set default nick (userx) and room (1)
 document.getElementById("nick").value = "user" + (Math.floor(Math.random() * 99) + 1);
@@ -16,11 +22,13 @@ function openSocket() {
         return;
     }
 
-    // Get the nick (it might have been changed by the user)
+    // Get the nick (it might have been changed by the user) and disable changes to it
     nick = document.getElementById("nick").value.toString();
+    document.getElementById("nick").readOnly = true;
 
-    // Get the room id
+    // Get the room id and disable changes to it
     var roomid = document.getElementById("roomid").value.toString();
+    document.getElementById("roomid").readOnly = true;
 
     // Create a new instance of the websocket
     webSocket = new WebSocket("ws://localhost:8080/EchoChamber/echo/rooms/" + roomid + "/user/" + nick);
@@ -41,7 +49,7 @@ function openSocket() {
     webSocket.onmessage = function (event) {
         var msg = event.data.toLocaleString();
 
-        //If the message is the userlist, update it in the frontend, if not, show it
+        //If the message is the userlist, update it, if not, show the message
         if (msg.startsWith("Users in this room:")) {
             document.getElementById("users").innerHTML = msg;
         } else {
@@ -52,6 +60,9 @@ function openSocket() {
     webSocket.onclose = function (event) {
         writeResponse("Connection closed");
         document.getElementById("users").innerHTML = "";
+        document.getElementById("nick").readOnly = false;
+        document.getElementById("roomid").readOnly = false;
+        document.getElementById("messageinput").value = ""; //Clear message input
     };
 }
 
@@ -73,4 +84,18 @@ function closeSocket() {
 
 function writeResponse(text) {
     messages.innerHTML += "<br/>" + text;
+}
+
+function isWriting() { //TODO
+    if (!writing) {// Notify only the 1st letter
+        //messages.innerHTML += "<br/>" + "writing...";
+        writing = true;
+        webSocket.send("writing"); //Notify the server
+    }
+}
+
+function stoppedWriting() {
+    //messages.innerHTML += "<br/>" + "stopped writing...";
+    writing = false;
+    webSocket.send("not writing"); //Notify the server
 }
