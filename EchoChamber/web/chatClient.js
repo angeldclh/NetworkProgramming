@@ -24,6 +24,10 @@ function openSocket() {
 
     // Get the nick (it might have been changed by the user) and disable changes to it
     nick = document.getElementById("nick").value.toString();
+    if (nick.startsWith("INFO") || nick.startsWith("Users") || nick.startsWith("writing") || nick.startsWith("not writing")) {
+        writeResponse("Invalid nick. Please, choose another one.");
+        return;
+    }
     document.getElementById("nick").readOnly = true;
 
     // Get the room id and disable changes to it
@@ -42,7 +46,6 @@ function openSocket() {
         // Leave a comment if you know the answer.
         if (event.data === undefined)
             return;
-
         writeResponse(event.data);
     };
 

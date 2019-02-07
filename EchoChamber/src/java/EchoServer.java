@@ -27,18 +27,20 @@ public class EchoServer {
      * @param session
      * @param roomid
      * @param nick
+     * @throws java.io.IOException
      * @OnOpen allows us to intercept the creation of a new session. The session class allows us to send data to the user. In the method onOpen, we'll let the user know that the handshake was successful.
      */
     @OnOpen
-    public void onOpen(Session session, @PathParam("roomid") final String roomid, @PathParam("nick") final String nick) {
-        System.out.println(session.getId() + " has opened a connection");
+    public void onOpen(Session session, @PathParam("roomid") final String roomid, @PathParam("nick") final String nick) throws IOException {
+
         session.getUserProperties().put("roomid", roomid);
         session.getUserProperties().put("nick", nick);
-        try {
-            session.getBasicRemote().sendText("Connection Established, room " + roomid + ", user " + nick);
-        } catch (IOException ex) {
-        }
+        System.out.println(session.getId() + " has opened a connection");
+
+        session.getBasicRemote().sendText("Connection Established, room " + roomid + ", user " + nick);
+
         SessionHandler.addSession(session);
+
     }
 
     /**
@@ -54,19 +56,19 @@ public class EchoServer {
 
         // Messages informing about changes on text input (user is / has stopped writing)
         if (message.startsWith("writing")) { //The sending session is writing
-            ArrayList<String> aux = SessionHandler.users.get(roomID);
-            aux.remove(user);
-            aux.add(0, user + " (writing)");
+            ArrayList<String> p = SessionHandler.users.get(roomID);
+            p.remove(user);
+            p.add(0, user + " (writing)");
             //Send the updated user list
             SessionHandler.sendToAllConnectedSessionsInRoom(roomID, "Users in this room: " + SessionHandler.users.get(roomID).toString(), true);
-        } else if (message.startsWith("not writing")) {
-            ArrayList<String> aux = SessionHandler.users.get(roomID);
-            aux.remove(user + " (writing)");
-            aux.add(user);
+        } else if (message.startsWith("not writing")) { //The sending session has stopped writing
+            ArrayList<String> p = SessionHandler.users.get(roomID); // pointer
+            p.remove(user + " (writing)");
+            p.add(user);
             //Send the updated user list
             SessionHandler.sendToAllConnectedSessionsInRoom(roomID, "Users in this room: " + SessionHandler.users.get(roomID).toString(), true);
         } else {
-            // Normal messages
+            // Normal messages: just send them to the connected sessions
             SessionHandler.sendToAllConnectedSessionsInRoom(roomID, message, false);
         }
     }

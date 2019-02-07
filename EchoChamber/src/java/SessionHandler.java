@@ -17,10 +17,11 @@ import javax.websocket.Session;
  */
 public class SessionHandler {
 
+    // This set and maps can be considered a "fake DB in memory". Obviously, a real DB would be a way better solution
     private static final Set<Session> sessions = new HashSet<Session>();
-    // "Fake database" containing lists of messages with their room ID as key. A real DB would be a way better solution
+    // Key: room ID; values: list of messages in each room.
     private static final HashMap<String, ArrayList<String>> messages = new HashMap<String, ArrayList<String>>();
-    //Users in each room (protected because needs to be accesed by EchoServer.java)
+    // Key: room ID; values: list of users in each room (protected because it needs to be accesed by EchoServer.java)
     protected static final HashMap<String, ArrayList<String>> users = new HashMap<String, ArrayList<String>>();
 
     public static void addSession(Session session) {
